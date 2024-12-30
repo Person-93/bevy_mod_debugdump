@@ -7,9 +7,9 @@ use bevy::{
     render::RenderApp,
     sprite::Mesh2dUniform,
 };
-use bevy_ecs::schedule::ScheduleLabel;
+use bevy::ecs::schedule::ScheduleLabel;
 use bevy_mod_debugdump::schedule_graph::{settings::Style, Settings};
-use bevy_render::{
+use bevy::render::{
     batching::{
         gpu_preprocessing::{BatchedInstanceBuffers, IndirectParametersBuffer},
         no_gpu_preprocessing::BatchedInstanceBuffer,
@@ -89,8 +89,8 @@ fn main() -> Result<(), std::io::Error> {
                         .unwrap();
 
                     let ignore_ambiguities = &[
-                        TypeId::of::<bevy_render::MainWorld>(),
-                        TypeId::of::<bevy_render::texture::TextureCache>(),
+                        TypeId::of::<bevy::render::MainWorld>(),
+                        TypeId::of::<bevy::render::texture::TextureCache>(),
                         TypeId::of::<IndirectParametersBuffer>(),
                         TypeId::of::<BatchedInstanceBuffers<MeshUniform, MeshInputUniform>>(),
                         TypeId::of::<BatchedInstanceBuffer<MeshUniform>>(),
@@ -166,7 +166,7 @@ fn initialize_schedules(
 fn with_main_world_in_render_app<T>(app: &mut App, f: impl Fn(&mut SubApp) -> T) -> T {
     // temporarily add the app world to the render world as a resource
     let inserted_world = std::mem::take(app.world_mut());
-    let mut render_main_world = bevy_render::MainWorld::default();
+    let mut render_main_world = bevy::render::MainWorld::default();
     *render_main_world = inserted_world;
 
     let render_app = app.sub_app_mut(RenderApp);
@@ -177,7 +177,7 @@ fn with_main_world_in_render_app<T>(app: &mut App, f: impl Fn(&mut SubApp) -> T)
     // move the app world back, as if nothing happened.
     let mut inserted_world = render_app
         .world_mut()
-        .remove_resource::<bevy_render::MainWorld>()
+        .remove_resource::<bevy::render::MainWorld>()
         .unwrap();
     *app.world_mut() = std::mem::take(&mut *inserted_world);
 

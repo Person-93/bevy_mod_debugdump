@@ -1,13 +1,13 @@
 pub mod settings;
 pub mod system_style;
 
-use bevy_utils::{HashMap, HashSet};
+use bevy::utils::{HashMap, HashSet};
 pub use settings::Settings;
 
 use std::{any::TypeId, borrow::Cow, collections::VecDeque, fmt::Write, sync::atomic::AtomicUsize};
 
 use crate::dot::DotGraph;
-use bevy_ecs::{
+use bevy::ecs::{
     schedule::{NodeId, Schedule, ScheduleGraph, SystemSet},
     system::System,
     world::World,
@@ -28,7 +28,7 @@ pub fn schedule_graph_dot(schedule: &Schedule, world: &World, settings: &Setting
     // collect sets and systems
     let mut systems_freestanding = Vec::new();
     let mut systems_in_single_set = HashMap::<NodeId, Vec<_>>::new();
-    let mut systems_in_multiple_sets = bevy_utils::HashMap::<Option<NodeId>, Vec<_>>::new();
+    let mut systems_in_multiple_sets = bevy::utils::HashMap::<Option<NodeId>, Vec<_>>::new();
 
     for (system_id, system, _condition) in graph
         .systems()
@@ -57,7 +57,7 @@ pub fn schedule_graph_dot(schedule: &Schedule, world: &World, settings: &Setting
 
     let mut sets_freestanding = Vec::new();
     let mut sets_in_single_set = HashMap::<NodeId, Vec<_>>::new();
-    let mut sets_in_multiple_sets = bevy_utils::HashMap::<Option<NodeId>, Vec<_>>::new();
+    let mut sets_in_multiple_sets = bevy::utils::HashMap::<Option<NodeId>, Vec<_>>::new();
 
     let mut collapsed_sets = HashSet::new();
     let mut collapsed_set_children = HashMap::new();

@@ -1,8 +1,8 @@
 use std::{fs::File, path::PathBuf};
 
-use bevy_app::App;
-use bevy_ecs::{intern::Interned, schedule::ScheduleLabel, schedule::Schedules};
-use bevy_utils::tracing::{error, info};
+use bevy::app::App;
+use bevy::ecs::{intern::Interned, schedule::ScheduleLabel, schedule::Schedules};
+use bevy::utils::tracing::{error, info};
 use std::io::Write;
 
 #[cfg(feature = "render_graph")]
@@ -43,7 +43,7 @@ use crate::{schedule_graph, schedule_graph_dot};
 ///
 pub struct CommandLineArgs;
 
-impl bevy_app::Plugin for CommandLineArgs {
+impl bevy::app::Plugin for CommandLineArgs {
     fn build(&self, _app: &mut App) {}
 
     fn finish(&self, app: &mut App) {
@@ -59,9 +59,9 @@ impl bevy_app::Plugin for CommandLineArgs {
             // TODO: It would be nice if we could exit before the window
             // opens, but I don't see how.
             app.add_systems(
-                bevy_app::First,
-                |mut app_exit_events: bevy_ecs::event::EventWriter<bevy_app::AppExit>| {
-                    app_exit_events.send(bevy_app::AppExit::Success);
+                bevy::app::First,
+                |mut app_exit_events: bevy::ecs::event::EventWriter<bevy::app::AppExit>| {
+                    app_exit_events.send(bevy::app::AppExit::Success);
                 },
             );
         }

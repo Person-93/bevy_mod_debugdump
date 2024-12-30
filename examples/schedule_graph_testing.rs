@@ -2,7 +2,7 @@
 use std::{collections::BTreeSet, path::PathBuf};
 
 use bevy::{prelude::*, render::RenderApp, utils::HashSet};
-use bevy_ecs::{
+use bevy::ecs::{
     component::ComponentId,
     schedule::{NodeId, ScheduleLabel},
 };

@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
-use bevy_app::App;
-use bevy_ecs::schedule::{ScheduleLabel, Schedules};
+use bevy::app::App;
+use bevy::ecs::schedule::{ScheduleLabel, Schedules};
 
 mod cli;
 mod dot;
@@ -61,10 +61,10 @@ pub fn print_schedule_graph(app: &mut App, schedule_label: impl ScheduleLabel) {
 /// ```
 #[cfg(feature = "render_graph")]
 pub fn render_graph_dot(app: &App, settings: &render_graph::Settings) -> String {
-    use bevy_render::render_graph::RenderGraph;
+    use bevy::render::render_graph::RenderGraph;
 
     let render_app = app
-        .get_sub_app(bevy_render::RenderApp)
+        .get_sub_app(bevy::render::RenderApp)
         .unwrap_or_else(|| panic!("no render app"));
     let render_graph = render_app.world().get_resource::<RenderGraph>().unwrap();
 

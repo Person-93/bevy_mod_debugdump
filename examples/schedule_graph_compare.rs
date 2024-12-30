@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use bevy::prelude::*;
-use bevy_ecs::schedule::ScheduleLabel;
+use bevy::ecs::schedule::ScheduleLabel;
 use bevy_mod_debugdump::schedule_graph::{settings::EdgeStyle, Settings};
 
 #[derive(ScheduleLabel, Clone, Debug, PartialEq, Eq, Hash)]

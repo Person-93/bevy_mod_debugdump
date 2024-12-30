@@ -1,9 +1,9 @@
 use std::borrow::Cow;
 use std::sync::LazyLock;
 
-use bevy_color::{Color, Srgba};
-use bevy_ecs::system::System;
-use bevy_utils::HashMap;
+use bevy::color::{Color, Srgba};
+use bevy::ecs::system::System;
+use bevy::utils::HashMap;
 
 static CRATE_COLORS: LazyLock<HashMap<&str, &str>> = LazyLock::new(|| {
     [

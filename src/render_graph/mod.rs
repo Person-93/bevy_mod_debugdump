@@ -1,11 +1,11 @@
 pub mod settings;
 
-use bevy_ecs::intern::Interned;
+use bevy::ecs::intern::Interned;
 pub use settings::Settings;
 
 use self::iter_utils::sorted;
 use crate::dot::{font_tag, html_escape, DotGraph};
-use bevy_render::render_graph::{Edge, RenderGraph, RenderLabel};
+use bevy::render::render_graph::{Edge, RenderGraph, RenderLabel};
 use iter_utils::EitherOrBoth;
 use pretty_type_name::pretty_type_name_str;
 use std::collections::HashMap;
