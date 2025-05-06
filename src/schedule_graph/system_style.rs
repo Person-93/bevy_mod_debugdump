@@ -1,8 +1,8 @@
 use std::sync::LazyLock;
 
 use bevy_color::{Color, Srgba};
-use bevy_ecs::system::ScheduleSystem;
-use bevy_platform::collections::hash_map::HashMap;
+use bevy_ecs::system::System;
+use bevy_utils::HashMap;
 
 static CRATE_COLORS: LazyLock<HashMap<&str, &str>> = LazyLock::new(|| {
     [
@@ -52,7 +52,7 @@ pub fn color_to_hex(color: Color) -> String {
     )
 }
 
-pub fn system_to_style(system: &ScheduleSystem) -> SystemStyle {
+pub fn system_to_style(system: &dyn System<In = (), Out = ()>) -> SystemStyle {
     let name = system.name();
     let pretty_name = disqualified::ShortName(&name).to_string();
     let is_apply_system_buffers = pretty_name == "apply_system_buffers";

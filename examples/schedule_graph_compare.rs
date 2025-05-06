@@ -25,7 +25,11 @@ fn main() -> Result<(), std::io::Error> {
             // for `conflicting_systems`
             schedule
                 .graph_mut()
-                .build_schedule(world, ScheduleDebugGroup.intern(), &ignored_ambiguities)
+                .build_schedule(
+                    world.components(),
+                    ScheduleDebugGroup.intern(),
+                    &ignored_ambiguities,
+                )
                 .unwrap();
 
             for edge_style in [
@@ -39,7 +43,7 @@ fn main() -> Result<(), std::io::Error> {
                 let mut settings = Settings::default();
                 settings.style.edge_style = edge_style;
                 let dot = bevy_mod_debugdump::schedule_graph::schedule_graph_dot(
-                    schedule, world, &settings,
+                    schedule, &world, &settings,
                 );
 
                 std::fs::write(

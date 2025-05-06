@@ -1,7 +1,7 @@
 use std::any::TypeId;
 
 use bevy_color::{Color, Hsla};
-use bevy_ecs::{component::ComponentId, schedule::SystemSet, system::ScheduleSystem, world::World};
+use bevy_ecs::{component::ComponentId, schedule::SystemSet, system::System, world::World};
 
 use super::system_style::{color_to_hex, system_to_style, SystemStyle};
 
@@ -157,7 +157,12 @@ impl Default for Style {
     }
 }
 
-type IncludeAmbiguityFn = dyn Fn(&ScheduleSystem, &ScheduleSystem, &[ComponentId], &World) -> bool;
+type IncludeAmbiguityFn = dyn Fn(
+    &dyn System<In = (), Out = ()>,
+    &dyn System<In = (), Out = ()>,
+    &[ComponentId],
+    &World,
+) -> bool;
 
 pub struct NodeStyle {
     pub bg_color: String,
@@ -167,7 +172,7 @@ pub struct NodeStyle {
 }
 
 // Function that maps `System` to `T`
-type SystemMapperFn<T> = Box<dyn Fn(&ScheduleSystem) -> T>;
+type SystemMapperFn<T> = Box<dyn Fn(&dyn System<In = (), Out = ()>) -> T>;
 
 // Function that maps `SystemSet` to `T`
 type SystemSetMapperFn<T> = Box<dyn Fn(&dyn SystemSet) -> T>;
@@ -218,7 +223,7 @@ impl Settings {
         self
     }
 
-    pub fn get_system_style(&self, system: &ScheduleSystem) -> NodeStyle {
+    pub fn get_system_style(&self, system: &dyn System<In = (), Out = ()>) -> NodeStyle {
         let style = (self.system_style)(system);
 
         // Check if bg is dark
@@ -311,11 +316,11 @@ impl Default for Settings {
     }
 }
 
-pub fn pretty_system_name(system: &ScheduleSystem) -> String {
+pub fn pretty_system_name(system: &dyn System<In = (), Out = ()>) -> String {
     disqualified::ShortName(&system.name()).to_string()
 }
 
-pub fn full_system_name(system: &ScheduleSystem) -> String {
+pub fn full_system_name(system: &dyn System<In = (), Out = ()>) -> String {
     system.name().into()
 }
 
