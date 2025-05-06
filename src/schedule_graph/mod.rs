@@ -4,15 +4,15 @@ pub mod system_style;
 use bevy_utils::{HashMap, HashSet};
 pub use settings::Settings;
 
-use std::{any::TypeId, borrow::Cow, collections::VecDeque, fmt::Write, sync::atomic::AtomicUsize};
+use std::{borrow::Cow, collections::VecDeque, fmt::Write, sync::atomic::AtomicUsize};
 
 use crate::dot::DotGraph;
 use bevy_ecs::{
-    schedule::{apply_deferred, NodeId, Schedule, ScheduleGraph, SystemSet},
+    schedule::{NodeId, Schedule, ScheduleGraph, SystemSet},
     system::System,
     world::World,
 };
-use petgraph::{prelude::DiGraphMap, Direction};
+use petgraph::prelude::*;
 
 /// Formats the schedule into a dot graph.
 pub fn schedule_graph_dot(schedule: &Schedule, world: &World, settings: &Settings) -> String {
@@ -612,9 +612,7 @@ impl ScheduleGraphContext<'_> {
             NodeId::Set(_) => {
                 let set = self.graph.set_at(node_id);
 
-                if set.system_type() == Some(TypeId::of::<apply_deferred>()) {
-                    "ApplyDeferred".to_owned()
-                } else if set.system_type().is_some() {
+                if set.system_type().is_some() {
                     let system_node = self.system_of_system_type(set);
                     if let Some(system_node) = system_node {
                         self.system_node_ref(system_node)
@@ -733,7 +731,7 @@ impl Iterator for Ancestors<'_> {
 
 fn collect_reachable(
     reachable: &mut HashSet<NodeId>,
-    graph: &DiGraph,
+    graph: &GraphMap<NodeId, (), Directed>,
     u: NodeId,
     direction: Direction,
 ) {
@@ -743,11 +741,16 @@ fn collect_reachable(
     }
 }
 
-fn toposort(graph: &DiGraph) -> Vec<NodeId> {
+fn toposort(graph: &GraphMap<NodeId, (), Directed>) -> Vec<NodeId> {
     let mut visited = HashSet::new();
     let mut stack = Vec::new();
 
-    fn dfs(visited: &mut HashSet<NodeId>, stack: &mut Vec<NodeId>, graph: &DiGraph, node: NodeId) {
+    fn dfs(
+        visited: &mut HashSet<NodeId>,
+        stack: &mut Vec<NodeId>,
+        graph: &GraphMap<NodeId, (), Directed>,
+        node: NodeId,
+    ) {
         if !visited.insert(node) {
             return;
         }
@@ -767,7 +770,7 @@ fn toposort(graph: &DiGraph) -> Vec<NodeId> {
     stack
 }
 
-fn remove_transitive_edges(graph: &mut DiGraph) {
+fn remove_transitive_edges(graph: &mut GraphMap<NodeId, (), Directed>) {
     let toposort = toposort(graph);
 
     let mut reachable = HashSet::new();
@@ -783,7 +786,7 @@ fn remove_transitive_edges(graph: &mut DiGraph) {
             // if we still can access a neighbour with a longer path, it's a transitive dependency.
             if !reachable.contains(&n) {
                 // No longer path, so we're keeping that edge.
-                graph.add_edge(visiting, n);
+                graph.add_edge(visiting, n, ());
             }
         }
     }
